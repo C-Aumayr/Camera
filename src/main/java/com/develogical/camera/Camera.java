@@ -4,6 +4,8 @@ public class Camera {
 
     private MemoryCard memoryCard;
     private Sensor sensor;
+    public boolean powerState;
+    public boolean currentlyWriting;
 
     public Camera(Sensor sensor) {
         this.sensor=sensor;
@@ -15,19 +17,25 @@ public class Camera {
     }
 
     public void pressShutter() {
-        WriteCompleteListener callback = () -> {
-
-        };
-        byte[] data = sensor.readData();
-        memoryCard.write(data, callback);
+        if (powerState) {
+            WriteCompleteListener callback = () -> {
+            };
+            byte[] data = sensor.readData();
+            memoryCard.write(data, callback);
+            currentlyWriting = true;
+        }
     }
 
     public void powerOn() {
         sensor.powerUp();
+        powerState=true ;
     }
 
     public void powerOff() {
-       sensor.powerDown();
+       if (!currentlyWriting) {
+           sensor.powerDown();
+        }
+       powerState=false;
     }
 }
 

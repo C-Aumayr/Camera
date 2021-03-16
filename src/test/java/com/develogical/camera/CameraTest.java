@@ -3,6 +3,7 @@ package com.develogical.camera;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
@@ -37,7 +38,9 @@ public class CameraTest {
     @Test
     public void whenPowerIsOffPressingTheShutterDoesNothing() {
         underTest.powerOff();
-        verifyZeroInteractions(sensor, memoryCard);
+        verify(sensor,times(1)).powerDown();
+        underTest.pressShutter();
+        verifyNoMoreInteractions(sensor, memoryCard);
 
 //        //using mocks - only mockOne is interacted
 //        mockOne.add("one");
@@ -52,5 +55,16 @@ public class CameraTest {
 //        verifyZeroInteractions(mockTwo, mockThree);
 
     }
+
+    @Test
+    public void whenWritingNoPowerDown() {
+        underTest.powerOn();
+        verify(sensor,times(1)).powerUp();
+        underTest.pressShutter();
+        verify(sensor,times(1)).readData();
+        underTest.powerOff();
+        verifyNoMoreInteractions(sensor);
+    }
+
 
 }
