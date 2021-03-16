@@ -15,7 +15,11 @@ public class Camera {
     }
 
     public void pressShutter() {
-        // not implemented
+        WriteCompleteListener callback = () -> {
+
+        };
+        byte[] data = sensor.readData();
+        memoryCard.write(data, callback);
     }
 
     public void powerOn() {
